@@ -1,2 +1,5 @@
 
 export(update_dataMin_db)
+
+export(initializeAWSStatus)
+export(updateAWSStatus)
