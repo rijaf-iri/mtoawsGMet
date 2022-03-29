@@ -14,7 +14,7 @@ update_dataMin_db <- function(aws_dir){
         dir.create(dirLOG, showWarnings = FALSE, recursive = TRUE)
     logPROC <- file.path(dirLOG, "update_aws_data0.txt")
 
-    conn <- connect_MySQL(aws_dir, "adt_ubuntu.con")
+    conn <- connect_MySQL(aws_dir, "adt.con")
     if(is.null(conn)){
         msg <- "Unable to connect to ADT server\n"
         format.out.msg(msg, logPROC)
@@ -74,12 +74,11 @@ update.aws_data0 <- function(conn, dirAWS, network){
         })
         dat <- do.call(rbind, dat)
 
-        dt_r <- range(dat$obs_time, na.rm = TRUE)
-        dt_r <- as.integer(dt_r)
+        last <- as.integer(max(dat$obs_time, na.rm = TRUE))
 
         DBI::dbWriteTable(conn, "aws_data0", dat, append = TRUE, row.names = FALSE)
-        statement <- paste0("UPDATE ", netCRDS[network], " SET startdate=",
-                            dt_r[1], ", enddate=", dt_r[2],
+
+        statement <- paste0("UPDATE ", netCRDS[network], " SET enddate=", last,
                             " WHERE id='", crds$id[i], "'")
         DBI::dbExecute(conn, statement)
     }
