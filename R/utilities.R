@@ -1,5 +1,7 @@
 
-Sys.setenv(TZ = "Africa/Accra")
+.onLoad <- function(libname, pkgname){
+    Sys.setenv(TZ = "Africa/Accra")
+}
 
 char_utc2local_time <- function(dates, format, tz){
     x <- strptime(dates, format, tz = "UTC")
