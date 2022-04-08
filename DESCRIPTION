@@ -12,6 +12,7 @@ Date: 2022-03-14
 Imports: 
     DBI,
     RMySQL,
-    RPostgres,
+    RODBC,
+    jsonlite,
     stringr,
 RoxygenNote: 7.1.1

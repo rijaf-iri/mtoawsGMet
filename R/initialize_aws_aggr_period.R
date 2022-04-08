@@ -2,7 +2,7 @@
 #'
 #' Populate table \code{aws_aggr_period} from \code{adt_db} for hourly and daily data.
 #' 
-#' @param aws_dir full path to the directory containing the AWS_DATA folder.\cr
+#' @param aws_dir full path to the directory containing the AWS_DATA folder.
 #' 
 #' @export
 
@@ -15,7 +15,7 @@ initializeAWSAggrPeriod <- function(aws_dir){
         dir.create(dirLOG, showWarnings = FALSE, recursive = TRUE)
     logPROC <- file.path(dirLOG, "initialize_aws_aggr_period.txt")
 
-    conn <- connect_MySQL(aws_dir, "adt.con")
+    conn <- connect.adt_db(aws_dir)
     if(is.null(conn)){
         msg <- "Unable to connect to ADT server\n"
         format.out.msg(msg, logPROC)

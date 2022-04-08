@@ -14,7 +14,7 @@ update_dataMin_db <- function(aws_dir){
         dir.create(dirLOG, showWarnings = FALSE, recursive = TRUE)
     logPROC <- file.path(dirLOG, "update_aws_data0.txt")
 
-    conn <- connect_MySQL(aws_dir, "adt.con")
+    conn <- connect.adt_db(aws_dir)
     if(is.null(conn)){
         msg <- "Unable to connect to ADT server\n"
         format.out.msg(msg, logPROC)

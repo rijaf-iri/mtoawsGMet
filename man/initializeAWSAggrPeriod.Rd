@@ -7,7 +7,7 @@
 initializeAWSAggrPeriod(aws_dir)
 }
 \arguments{
-\item{aws_dir}{full path to the directory containing the AWS_DATA folder.\cr}
+\item{aws_dir}{full path to the directory containing the AWS_DATA folder.}
 }
 \description{
 Populate table \code{aws_aggr_period} from \code{adt_db} for hourly and daily data.

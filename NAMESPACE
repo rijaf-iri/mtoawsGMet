@@ -1,6 +1,8 @@
 
 export(update_dataMin_db)
 
+export(add_adt_metadata_table)
+
 export(initializeAWSStatus)
 export(updateAWSStatus)
 

@@ -27,7 +27,7 @@ initializeAWSStatus <- function(aws_dir){
         dir.create(dirSTATUS, showWarnings = FALSE, recursive = TRUE)
 
     ###########
-    conn <- connect_MySQL(aws_dir, "adt.con")
+    conn <- connect.adt_db(aws_dir)
     if(is.null(conn)){
         msg <- "Unable to connect to ADT server\n"
         format.out.msg(msg, logPROC)
