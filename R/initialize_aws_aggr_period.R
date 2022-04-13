@@ -8,7 +8,7 @@
 
 initializeAWSAggrPeriod <- function(aws_dir){
     on.exit(DBI::dbDisconnect(conn))
-    netCRDS <- c("adcon_crds", "tahmo_crds")
+    netCRDS <- c("adcon_synop_crds", "adcon_aws_crds", "tahmo_crds")
 
     dirLOG <- file.path(aws_dir, "AWS_DATA", "LOG", "LOGPROC")
     if(!dir.exists(dirLOG))

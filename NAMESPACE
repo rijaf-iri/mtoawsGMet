@@ -7,3 +7,7 @@ export(initializeAWSStatus)
 export(updateAWSStatus)
 
 export(initializeAWSAggrPeriod)
+
+export(get_aws_parameters)
+export(get_aws_variables)
+export(get_aws_dataVarObj)

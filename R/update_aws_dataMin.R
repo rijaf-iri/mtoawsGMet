@@ -7,7 +7,7 @@
 #' @export
 
 update_dataMin_db <- function(aws_dir){
-    nb_net <- 2
+    nb_net <- 3
 
     dirLOG <- file.path(aws_dir, "AWS_DATA", "LOG", "LOGPROC")
     if(!dir.exists(dirLOG))
@@ -37,8 +37,8 @@ update_dataMin_db <- function(aws_dir){
 }
 
 update.aws_data0 <- function(conn, dirAWS, network){
-    netDIR <- c("ADCON", "TAHMO")
-    netCRDS <- c("adcon_crds", "tahmo_crds")
+    netDIR <- c("ADCON_SYNOP", "ADCON_AWS", "TAHMO")
+    netCRDS <- c("adcon_synop_crds", "adcon_aws_crds", "tahmo_crds")
 
     ######
     tz <- Sys.getenv("TZ")

@@ -7,7 +7,7 @@
 update_dataHour_db(aws_dir)
 }
 \arguments{
-\item{aws_dir}{full path to the directory containing the AWS_DATA folder.\cr}
+\item{aws_dir}{full path to the directory containing the AWS_DATA folder.}
 }
 \description{
 Update minutes data from AWS to ADT database.

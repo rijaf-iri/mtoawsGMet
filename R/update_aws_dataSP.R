@@ -7,7 +7,7 @@
 #' @export
 
 update_dataHour_sp <- function(aws_dir){
-    nb_net <- 2
+    nb_net <- 3
 
     dirLOG <- file.path(aws_dir, "AWS_DATA", "LOG", "LOGPROC")
     if(!dir.exists(dirLOG))
@@ -37,8 +37,8 @@ update_dataHour_sp <- function(aws_dir){
 }
 
 update.aws_data <- function(conn, dirAWS, network){
-    netCRDS <- c("adcon_crds", "tahmo_crds")
-    netPARS <- c("adcon_pars", "tahmo_pars")
+    netCRDS <- c("adcon_synop_crds", "adcon_aws_crds", "tahmo_crds")
+    netPARS <- c("adcon_synop_pars", "adcon_aws_pars", "tahmo_pars")
 
     tz <- Sys.getenv("TZ")
     origin <- "1970-01-01"

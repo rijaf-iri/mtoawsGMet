@@ -7,9 +7,9 @@
 #' @export
 
 updateAWSStatus <- function(aws_dir){
-    tstep <- c(15, 5)
-    netNOM <- c("Adcon", "Tahmo")
-    netCRDS <- c("adcon_crds", "tahmo_crds")
+    tstep <- c(15, 15, 5)
+    netNOM <- c("Adcon_Synop", "Adcon_AWS", "Tahmo")
+    netCRDS <- c("adcon_synop_crds", "adcon_aws_crds", "tahmo_crds")
     nmCol <- c("id", "name", "longitude", "latitude", "altitude",
                "Region", "District", "startdate", "enddate")
 

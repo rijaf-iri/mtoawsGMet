@@ -2,12 +2,12 @@
 #'
 #' Update minutes data from AWS to ADT database.
 #' 
-#' @param aws_dir full path to the directory containing the AWS_DATA folder.\cr
+#' @param aws_dir full path to the directory containing the AWS_DATA folder.
 #' 
 #' @export
 
 update_dataHour_db <- function(aws_dir){
-    nb_net <- 2
+    nb_net <- 3
 
     dirLOG <- file.path(aws_dir, "AWS_DATA", "LOG", "LOGPROC")
     if(!dir.exists(dirLOG))
@@ -40,10 +40,10 @@ update_dataHour_db <- function(aws_dir){
 }
 
 update.aws_hourly <- function(conn, dirAWS, network, minFrac){
-    netCRDS <- c("adcon_crds", "tahmo_crds")
-    netPARS <- c("adcon_pars", "tahmo_pars")
-    # netNOM <- c("ADCON", "TAHMO")
-    netTSTEP <- c(15, 5)
+    netCRDS <- c("adcon_synop_crds", "adcon_aws_crds", "tahmo_crds")
+    netPARS <- c("adcon_synop_pars", "adcon_aws_pars", "tahmo_pars")
+    # netNOM <- c("ADCON_SYNOP", "ADCON_AWS", "TAHMO")
+    netTSTEP <- c(15, 15, 5)
 
     tz <- Sys.getenv("TZ")
     origin <- "1970-01-01"
