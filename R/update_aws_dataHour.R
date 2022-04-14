@@ -7,7 +7,10 @@
 #' @export
 
 update_dataHour_db <- function(aws_dir){
-    nb_net <- 3
+   on.exit(DBI::dbDisconnect(conn))
+
+    netInfo <- aws_network_info()
+    nb_net <- netInfo$nbnet
 
     dirLOG <- file.path(aws_dir, "AWS_DATA", "LOG", "LOGPROC")
     if(!dir.exists(dirLOG))
@@ -34,16 +37,15 @@ update_dataHour_db <- function(aws_dir){
         }
     }
 
-    DBI::dbDisconnect(conn)
-
     return(0)
 }
 
 update.aws_hourly <- function(conn, dirAWS, network, minFrac){
-    netCRDS <- c("adcon_synop_crds", "adcon_aws_crds", "tahmo_crds")
-    netPARS <- c("adcon_synop_pars", "adcon_aws_pars", "tahmo_pars")
-    # netNOM <- c("ADCON_SYNOP", "ADCON_AWS", "TAHMO")
-    netTSTEP <- c(15, 15, 5)
+    netInfo <- aws_network_info()
+    netCRDS <- netInfo$coords
+    netPARS <- netInfo$pars
+    # netNOM <- netInfo$dirs
+    tstep <- netInfo$tstep
 
     tz <- Sys.getenv("TZ")
     origin <- "1970-01-01"

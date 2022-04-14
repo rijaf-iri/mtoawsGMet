@@ -7,14 +7,18 @@
 #' @export
 
 initializeAWSStatus <- function(aws_dir){
-    tstep <- c(15, 15, 5)
-    netNOM <- c("Adcon_Synop", "Adcon_AWS", "Tahmo")
-    netCRDS <- c("adcon_synop_crds", "adcon_aws_crds", "tahmo_crds")
-    nmCol <- c("id", "name", "longitude", "latitude", "altitude",
-               "Region", "District", "startdate", "enddate")
+    on.exit(DBI::dbDisconnect(conn))
+
+    netInfo <- aws_network_info()
+    tstep <- netInfo$tstep
+    netNOM <- netInfo$names
+    netCRDS <- netInfo$coords
 
     tz <- Sys.getenv("TZ")
     origin <- "1970-01-01"
+
+    nmCol <- c("id", "name", "longitude", "latitude", "altitude",
+               "Region", "District", "startdate", "enddate")
 
     ###########
     dirLOG <- file.path(aws_dir, "AWS_DATA", "LOG", "LOGPROC")
@@ -64,8 +68,6 @@ initializeAWSStatus <- function(aws_dir){
 
     query <- paste0("SELECT network, id, obs_time FROM aws_data0 WHERE obs_time>=", time0)
     qres <- DBI::dbGetQuery(conn, query)
-
-    DBI::dbDisconnect(conn)
 
     ###########
     ix <- split(seq(nrow(qres)), qres$id)

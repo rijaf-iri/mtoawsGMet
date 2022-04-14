@@ -7,7 +7,10 @@
 #' @export
 
 update_dataMin_db <- function(aws_dir){
-    nb_net <- 3
+    on.exit(DBI::dbDisconnect(conn))
+
+    netInfo <- aws_network_info()
+    nb_net <- netInfo$nbnet
 
     dirLOG <- file.path(aws_dir, "AWS_DATA", "LOG", "LOGPROC")
     if(!dir.exists(dirLOG))
@@ -31,14 +34,13 @@ update_dataMin_db <- function(aws_dir){
         }
     }
 
-    DBI::dbDisconnect(conn)
-
     return(0)
 }
 
 update.aws_data0 <- function(conn, dirAWS, network){
-    netDIR <- c("ADCON_SYNOP", "ADCON_AWS", "TAHMO")
-    netCRDS <- c("adcon_synop_crds", "adcon_aws_crds", "tahmo_crds")
+    netInfo <- aws_network_info()
+    netDIR <- netInfo$dirs
+    netCRDS <- netInfo$coords
 
     ######
     tz <- Sys.getenv("TZ")

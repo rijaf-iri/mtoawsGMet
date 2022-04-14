@@ -13,10 +13,11 @@ get_aws_parameters <- function(aws_dir){
     if(is.null(conn))
         stop("Unable to connect to ADT server\n")
 
-    netNOM <- c('adcon_synop', 'adcon_aws', 'tahmo')
-    netDIR <- c("ADCON_SYNOP", "ADCON_AWS", "TAHMO")
-    netCRDS <- c("adcon_synop_crds", "adcon_aws_crds", "tahmo_crds")
-    netPARS <- c("adcon_synop_pars", "adcon_aws_pars", "tahmo_pars")
+    netInfo <- aws_network_info()
+    netNOM <- tolower(netInfo$names)
+    netDIR <- netInfo$dirs
+    netCRDS <- netInfo$coords
+    netPARS <- netInfo$pars
 
     var_col <- c("var_name", "var_height", "var_unit",
                  "var_stat", "var_code", "stat_code")

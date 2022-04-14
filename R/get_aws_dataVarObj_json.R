@@ -13,7 +13,8 @@ get_aws_dataVarObj <- function(aws_dir){
     if(is.null(conn))
         stop("Unable to connect to ADT server\n")
 
-    netPARS <- c("adcon_synop_pars", "adcon_aws_pars", "tahmo_pars")
+    netInfo <- aws_network_info()
+    netPARS <- netInfo$pars
 
     varTable <- lapply(seq_along(netPARS), function(n){
         DBI::dbReadTable(conn, netPARS[n])
