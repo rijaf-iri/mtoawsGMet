@@ -75,6 +75,7 @@ update.aws_data0 <- function(conn, dirAWS, network){
             readRDS(file.path(dirRDS, x))
         })
         dat <- do.call(rbind, dat)
+        dat <- dat[!duplicated(dat$obs_id), , drop = FALSE]
 
         last <- as.integer(max(dat$obs_time, na.rm = TRUE))
 

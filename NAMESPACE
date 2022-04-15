@@ -1,5 +1,6 @@
 
 export(update_dataMin_db)
+export(update_dataHour_sp)
 
 export(add_adt_metadata_table)
 

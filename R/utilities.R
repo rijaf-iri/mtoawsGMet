@@ -174,41 +174,6 @@ get_index_minhour2day_start <- function(times, instep, obs.hour, tz){
 
 ####################################################
 
-# connect.database <- function(con_args, drv){
-#     args <- c(list(drv = drv), con_args)
-#     con <- do.call(DBI::dbConnect, args)
-#     con
-# }
-
-# connect_MySQL <- function(dirAWS, fileCON){
-#     adt <- readRDS(file.path(dirAWS, "AWS_DATA", "AUTH", fileCON))
-#     conn <- try(connect.database(adt$connection,
-#                 RMySQL::MySQL()), silent = TRUE)
-#     if(inherits(conn, "try-error")){
-#         Sys.sleep(1)
-#         conn <- try(connect.database(adt$connection,
-#                     RMySQL::MySQL()), silent = TRUE)
-#         if(inherits(conn, "try-error")) return(NULL)
-#     }
-
-#     DBI::dbExecute(conn, "SET GLOBAL local_infile=1")
-#     return(conn)
-# }
-
-# connect_RPostgres <- function(dirAWS, fileCON){
-#     con_args <- readRDS(file.path(dirAWS, "AWS_DATA", "AUTH", fileCON))
-#     conn <- try(connect.database(con_args$connection,
-#                 RPostgres::Postgres()), silent = TRUE)
-#     if(inherits(conn, "try-error")){
-#         Sys.sleep(3)
-#         conn <- try(connect.database(con_args$connection,
-#                     RPostgres::Postgres()), silent = TRUE)
-#         if(inherits(conn, "try-error")) return(NULL)
-#     }
-
-#     return(conn)
-# }
-
 connect.DBI <- function(con_args, drv){
     args <- c(list(drv = drv), con_args)
     con <- try(do.call(DBI::dbConnect, args), silent = TRUE)
@@ -253,35 +218,6 @@ formatTablesColumns <- function(qres, format, name){
     names(out) <- name
     out
 }
-
-deleteDuplicatedObs_old <- function(conn, table_name, obs_id){
-    del_obs <- split(obs_id, ceiling(seq_along(obs_id) / 100))
-    lapply(del_obs, function(id){
-        vec <- paste0("'", id, "'")
-        vec <- paste0(vec, collapse = ", ")
-        vec <- paste0("(", vec, ")")
-        query <- paste0("DELETE FROM ", table_name, " WHERE obs_id IN ", vec)
-        DBI::dbExecute(conn, query)
-    })
-}
-
-deleteDuplicatedObs <- function(conn, table_name, obs_id){
-    obs_id <- data.frame(obs_id = obs_id)
-    query <- "DROP TABLE IF EXISTS ObsId_Table"
-    DBI::dbExecute(conn, query)
-    query <- "CREATE TABLE ObsId_Table(obs_id VARCHAR(80) NOT NULL)"
-    DBI::dbExecute(conn, query)
-    DBI::dbWriteTable(conn, "ObsId_Table", obs_id, row.names = FALSE, overwrite = TRUE)
-    query <- paste0("DELETE ", table_name, " FROM ", table_name,
-                    " INNER JOIN ObsId_Table ON ", table_name,
-                    ".obs_id=ObsId_Table.obs_id")
-    DBI::dbExecute(conn, query)
-    query <- "DROP TABLE ObsId_Table"
-    DBI::dbExecute(conn, query)
-    return(0)
-}
-
-####################################################
 
 format.out.msg <- function(msg, logfile, append = TRUE){
     ret <- c(paste("Time:", Sys.time(), "\n"), msg, "\n",

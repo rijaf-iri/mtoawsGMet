@@ -7,6 +7,8 @@
 #' @export
 
 update_dataHour_sp <- function(aws_dir){
+    on.exit(DBI::dbDisconnect(conn))
+
     netInfo <- aws_network_info()
     nb_net <- netInfo$nbnet
 
@@ -32,8 +34,6 @@ update_dataHour_sp <- function(aws_dir){
         }
     }
 
-    DBI::dbDisconnect(conn)
-
     return(0)
 }
 
@@ -52,7 +52,9 @@ update.aws_data <- function(conn, dirAWS, network){
         last <- lastTb$hour_sp_end[lastTb$network == network & lastTb$id == crds$id[i]]
         if(last == 0){
             last <- as.POSIXct("2015-01-01 00:00:00", tz = tz)
+            dlast <- as.integer(last)
         }else{
+            dlast <- last
             last <- as.POSIXct(as.integer(last), origin = origin, tz = tz) - 60 * 60
         }
         last <- as.integer(last)
@@ -104,10 +106,41 @@ update.aws_data <- function(conn, dirAWS, network){
         dat_1hr <- formatTablesColumns(dat_1hr, fun_format, name_dat)
         dat_1hr$obs_id <- getObsId(dat_1hr)
 
-        deleteDuplicatedObs(conn, "aws_data", dat_1hr$obs_id)
+        ######
+        # update last record
+        dat_last <- dat_1hr[dat_1hr$obs_time == dlast, , drop = FALSE]
+        if(nrow(dat_last) > 0){
+            query <- paste0("SELECT * FROM aws_data WHERE network=", network,
+                            " AND id='", crds$id[i], "' AND obs_time=", dlast)
+            dat_db <- DBI::dbGetQuery(conn, query)
+            if(nrow(dat_db) > 0){
+                idup <- dat_last$obs_id %in% dat_db$obs_id
+                if(any(idup)){
+                    dat_last <- dat_last[idup, , drop = FALSE]
+                    dat_last$limit_check[is.na(dat_last$limit_check)] <- 'NULL'
+                    for(j in seq(nrow(dat_last))){
+                        statement <- paste0("UPDATE aws_data SET value=", dat_last$value[j],
+                                            ", limit_check=", dat_last$limit_check[j],
+                                            " WHERE network=", dat_last$network[j],
+                                            " AND id='", dat_last$id[j],
+                                            "' AND height=", dat_last$height[j],
+                                            " AND obs_time=", dat_last$obs_time[j],
+                                            " AND var_code=", dat_last$var_code[j],
+                                            " AND stat_code=", dat_last$stat_code[j])
+                        DBI::dbExecute(conn, statement)
+                    }
+
+                    dat_1hr <- dat_1hr[!dat_1hr$obs_id %in% dat_last$obs_id, , drop = FALSE]
+                    if(nrow(dat_1hr) == 0) next
+                }
+            }
+        }
+
+        #####
+
         DBI::dbWriteTable(conn, "aws_data", dat_1hr, append = TRUE, row.names = FALSE)
 
-        last <- max(dat_1hr$obs_time, na.rm = TRUE)
+        last <- max(as.integer(dat_1hr$obs_time), na.rm = TRUE)
         statement <- paste0("UPDATE aws_aggr_period SET hour_sp_end=", last,
                             " WHERE network=", network, " AND id='", crds$id[i], "'")
         DBI::dbExecute(conn, statement)
