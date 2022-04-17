@@ -58,6 +58,7 @@ update.aws_data <- function(conn, dirAWS, network){
             last <- as.POSIXct(as.integer(last), origin = origin, tz = tz) - 60 * 60
         }
         last <- as.integer(last)
+
         query <- paste0("SELECT * FROM aws_data0 WHERE (network=", network, " AND id='", crds$id[i], "') AND obs_time > ", last)
         qres <- DBI::dbGetQuery(conn, query)
         if(nrow(qres) == 0) next
@@ -77,13 +78,20 @@ update.aws_data <- function(conn, dirAWS, network){
             obs_var <- id_obs$var_code[j]
             ix <- qres$height == obs_hgt & qres$var_code == obs_var
             qvar <- qres[ix, , drop = FALSE]
+            if(nrow(qvar) == 0) return(NULL)
 
             dat_var <- getAWSObs_1hr_SP(qvar)
             return(dat_var)
         })
 
+        inull <- sapply(dat_1hr, is.null)
+        if(all(inull)) next
+
         dat_1hr <- do.call(rbind, dat_1hr)
         name_dat <- names(dat_1hr)
+
+        dat_1hr <- dat_1hr[dat_1hr$obs_time >= dlast, , drop = FALSE]
+        if(nrow(dat_1hr) == 0) next
 
         ### limit check
         varTable <- DBI::dbReadTable(conn, netPARS[network])

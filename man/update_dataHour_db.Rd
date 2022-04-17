@@ -2,7 +2,7 @@
 % Please edit documentation in R/update_aws_dataHour.R
 \name{update_dataHour_db}
 \alias{update_dataHour_db}
-\title{Update minutes data database.}
+\title{Update hourly data database.}
 \usage{
 update_dataHour_db(aws_dir)
 }
@@ -10,5 +10,5 @@ update_dataHour_db(aws_dir)
 \item{aws_dir}{full path to the directory containing the AWS_DATA folder.}
 }
 \description{
-Update minutes data from AWS to ADT database.
+Update hourly data from AWS to ADT database.
 }
